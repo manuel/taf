@@ -1,0 +1,9 @@
+* Taf Programming Language
+
+/Taf/ is a descendant of the Lisp and ML programming languages with
+hygienic procedural macros, a type system based on polymorphic
+variants, and multi-prompt delimited continuations.
+
+Taf can also be viewed as a [[http://lists.canonical.org/pipermail/kragen-tol/2012-June/000958.html][femto-ML]] with Lisp syntax.
+
+Taf is vaporware currently being developed by [[mailto:msimoni@gmail.com][Manuel Simoni]].
