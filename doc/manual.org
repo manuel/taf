@@ -1,0 +1,75 @@
+#+TITLE: Taf Language Specification
+#+AUTHOR: Manuel Simoni
+#+EMAIL: msimoni@gmail.com
+#+OPTIONS: toc:2 num:nil creator:nil
+#+STYLE: <link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+
+* Description
+
+/Taf/ is an experimental dialect of Lisp aiming at a tractable
+implementation of three expressive constructs: hygienic macros for
+syntax abstraction, delimited continuations for control abstraction,
+and row polymorphism for value abstraction.
+
+Taf has a ML-like strict core, but without partial application (IOW,
+functions are always applied to all arguments at once).  The only data
+types are primitives, such as numbers, and polymorphic variants with
+labelled fields (i.e. every such user-defined variant has as body a
+polymorphic record containing slots).
+
+Taf's goal is to enable programming in Common Lisp style with open
+generic functions while offering static type checking.
+
+* Core
+
+** let* [special]
+
+Scheme's `let*'.
+
+** letrec [special]
+
+Scheme's `letrec', but allowing only anonymous procedures on the
+right-hand side.
+
+** lambda [special]
+
+Scheme's `lambda', but without a rest parameter.
+
+** define <name> <value> -> #void [special]
+
+Scheme's `define', but allowed only at the top-level.
+
+** define-macro (<name> . <parameters>) . <body> [special]
+
+Similar to Common Lisp's `defmacro', but without quote or backquote.
+Code needs to be constructed with `cons', `list', etc.  Instead of
+referring to global bindings via quoted symbols, their values are
+directly referred to in the constructed expressions.
+
+** begin [special]
+
+Scheme's `begin'.
+
+As in Scheme, the contents of `begin' forms at the top-level are
+considered to be at the top-level themselves, recursively.
+
+** if <test> <then> <else> -> <result> [special]
+
+** loop . <body> -> #void [special]
+
+** block [special]
+
+** return-from [special]
+
+** unwind-protect [special]
+
+** push-prompt [special]
+
+** take-subcont [special]
+
+** push-subcont [special]
+
+* Translating to MLPolyR
+
+For typechecking, Taf code is translated to MLPolyR code.
+

@@ -1,0 +1,6 @@
+html { font-family: sans; }
+h1, h2, h4, h5, h6, h7, th, dt { font-family: sans; }
+h1 { font-size: 300%; }
+h2 { border-bottom: 2px solid black; }
+a:link, a:visited, a:hover { text-decoration: none; }
+.example { border-width: 0; background-color: #fff; border-radius: .5em; color: #333; padding: 0; }
