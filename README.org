@@ -1,3 +1,3 @@
 * Taf Programming Language
 
-See [[https://manuel.github.com/taf/doc/plan.html][Taf - A plan for a statically-typed Lisp]].
+See [[http://manuel.github.com/taf/doc/plan.html][Taf - A plan for a statically-typed Lisp]].
