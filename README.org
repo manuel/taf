@@ -1,8 +1,3 @@
 * Taf Programming Language
 
-Taf is an experimental dialect of Lisp aiming at a tractable
-implementation of three expressive constructs: hygienic macros for
-syntax abstraction, delimited continuations for control abstraction,
-and row polymorphism for value abstraction.
-
-Taf is currently being developed by [[mailto:msimoni@gmail.com][Manuel Simoni]].
+See [[https://manuel.github.com/taf/doc/plan.html][Taf - A plan for a statically-typed Lisp]].

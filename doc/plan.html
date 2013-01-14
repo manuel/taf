@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+lang="en" xml:lang="en">
+<head>
+<title>Taf - A plan for a statically-typed Lisp</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<meta name="generator" content="Org-mode"/>
+<meta name="generated" content="2013-01-14 22:12:18 CET"/>
+<meta name="author" content="Manuel Simoni"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #add8e6; font-weight:normal }
+  .target { }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+<script type="text/javascript">
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+
+<h1 class="title">Taf - A plan for a statically-typed Lisp</h1>
+
+<p><i>Taf</i> is a new Lisp that employs <b>row polymorphism</b>, found in such
+languages as O'Caml and MLPolyR, to enable a programming style that is
+fully type-safe, while maintaining Lisp's low overhead wrt. type
+system bureaucracy.  Row polymorphism enables the use of tagged
+records with named fields, without having to predeclare record tags,
+as well as open generic functions, to which methods can be added.
+Both features are fully type-safe: all accesses to non-existing
+fields, as well as calls to generic functions for which no matching
+method exists are detected statically during type-checking.  Note that
+the resulting system is even more dynamic-feeling than Lisp - we don't
+even need to use <code>define-record</code>, <code>define-class</code>, or similar anymore.
+</p>
+<p>
+For example, this code is statically type-checkable, while being
+similar to existing dynamically type-checked Lisp:
+</p>
+
+
+
+<pre class="example">(define (make-person name email)
+  #(person :name name :email email)) ; creates a person record with name and email fields
+
+(define-generic (to-string obj))
+(define-method (to-string (obj #(person :name :email))) ; matches persons and binds name and email field to local variables
+  (concat (list name " &lt;" email "&gt;")))
+
+(to-string (make-person "Manuel" "msimoni@gmail.com"))
+; ==&gt; "Manuel &lt;msimoni@gmail.com&gt;"
+</pre>
+
+
+
+
+<p>
+(Note the absence of any record type declaration for persons, while
+full type safety is maintained.)
+</p>
+<p>
+Taf employs a combination of Common Lisp's first-order control flow
+(<code>block</code>, <code>return-from</code>, <code>unwind-protect</code>) and multi-prompt dynamic
+<b>delimited continuations</b> (<code>push-prompt</code>, <code>take-subcont</code>,
+<code>push-subcont</code>).  Taf is not properly tail recursive, so an infinite
+<code>loop</code> is provided.
+</p>
+<p>
+For syntactic abstraction, Taf uses <b>hygienic procedural macros</b>,
+using a novel macro system inspired by Kernel's fexprs.
+</p>
+<p>
+Taf is currently vaporware, but actively being developed. The plan for
+the first iteration is:
+</p>
+<ul>
+<li>
+Translate Taf code to MLPolyR for type-checking.
+</li>
+<li>
+Interpret Taf code in JavaScript for interactive evaluation (the
+in-browser REPL will probably talk to a MLPolyR "type-check
+server").  This will use mostly the same techniques as <a href="https://github.com/manuel/wat-js">Wat</a>.
+
+</li>
+</ul>
+
+<p>Taf is hosted at <a href="https://github.com/manuel/taf">https://github.com/manuel/taf</a>.
+</p>
+
+<hr/>
+<div id="postamble">
+<p class="author"> Author: Manuel Simoni
+<a href="mailto:msimoni@gmail.com">&lt;msimoni@gmail.com&gt;</a>
+</p>
+<p class="date"> Date: 2013-01-14 22:12:18 CET</p>
+</div>
+</div>
+</body>
+</html>
