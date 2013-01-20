@@ -1,0 +1,55 @@
+#+TITLE: Translating Taf to OCaml
+#+AUTHOR: Manuel Simoni
+#+EMAIL: msimoni@gmail.com
+#+OPTIONS: toc:2 num:nil creator:nil
+#+STYLE: <link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+
+This document explains how [[https://github.com/manuel/taf][Taf]] code is translated to OCaml for type
+checking.
+
+* The Basic Idea
+
+The only difference between standard row polymorphism with pattern
+matching and Taf is that method definitions may be added anywhere in
+the program, and are grouped together into a match expression by the
+compiler.
+
+** Taf
+
+#+begin_example
+(define object-1 #(person :name "Manuel" :email "msimoni@gmail.com"))
+(define object-2 #(car :brand "Toyota" :build 2008))
+
+(define-generic (print-identification obj))
+(define-method (print-identification obj)
+  "unknown")
+(define-method (print-identification (obj #person))
+  (concat (list (^ obj :name) " <" (^ obj :email) ">")))
+(define-method (print-identification (obj #car))
+  (concat (list (^ obj :name) " (" (string->number (^ obj :build)) ")")))
+
+(print-identification object-1)
+;; ==> "Manuel <msimoni@gmail.com>"
+(print-identification object-2)
+;; ==> "Toyota (2008)"
+#+end_example
+
+** OCaml
+
+#+begin_example
+let object_1 = `person (object method name = "Manuel" method email = "msimoni@gmail.com" end);;
+let object_2 = `car (object method brand = "Toyota" method build = 2008 end);;
+
+let print_identification obj =
+  match obj with
+  | `person fields ->
+      String.concat "" [fields#name; " <"; fields#email; ">"]
+  | `car fields ->
+      String.concat "" [fields#brand; " <"; string_of_int fields#build; ">"]
+  | _ -> "unknown";;
+
+print_string (print_identification object_1);;
+print_string (print_identification object_2);;
+#+end_example
+
+------------
