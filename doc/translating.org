@@ -28,13 +28,57 @@ compiler.
 (define-method (print-identification (obj #car))
   (concat (list (^ obj :name) " (" (string->number (^ obj :build)) ")")))
 
+(define (whatevs obj)
+  (^ obj :name))
+
 (print-identification object-1)
 ;; ==> "Manuel <msimoni@gmail.com>"
 (print-identification object-2)
 ;; ==> "Toyota (2008)"
+(whatevs object-1)
+;; ==> "Manuel"
 #+end_example
 
 ** OCaml
+
+Here's an encoding using a OCaml's OO and a top class.
+
+#+begin_example
+class top =
+object
+  method print_identification =
+    "unknown"
+end
+class ['a] person (fields : 'a) =
+object
+  inherit top
+  method fields = fields
+  method print_identification =
+    String.concat "" [fields#name; " <"; fields#email; ">"]
+end;;
+class ['a] car (fields : 'a) =
+object
+  inherit top
+  method fields = fields
+  method print_identification =
+    String.concat "" [fields#brand; " <"; string_of_int (fields#build); ">"]
+end;;
+
+let whatevs obj =
+  obj#fields#name;;
+
+let object_1 = new person (object method name = "Manuel" method email = "msimoni@gmail.com" end);;
+let object_2 = new car (object method brand = "Toyota" method build = 2008 end);;
+let object_3 = new car (object method brand = "Toyota" method build = 2008 method color = "red" end);;
+
+print_string (object_1#print_identification);;
+print_string (object_2#print_identification);;
+print_string (object_3#print_identification);;
+print_string (whatevs object_1);;
+#+end_example
+
+Here's an encoding using polymorphic variants, that can't type
+=whatevs=:
 
 #+begin_example
 let object_1 = `person (object method name = "Manuel" method email = "msimoni@gmail.com" end);;
@@ -51,5 +95,3 @@ let print_identification obj =
 print_string (print_identification object_1);;
 print_string (print_identification object_2);;
 #+end_example
-
-------------

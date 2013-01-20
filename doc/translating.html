@@ -7,7 +7,7 @@ lang="en" xml:lang="en">
 <title>Translating Taf to OCaml</title>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2013-01-20 14:24:55 CET"/>
+<meta name="generated" content="2013-01-20 15:41:04 CET"/>
 <meta name="author" content="Manuel Simoni"/>
 <meta name="description" content=""/>
 <meta name="keywords" content=""/>
@@ -124,10 +124,15 @@ compiler.
 (define-method (print-identification (obj #car))
   (concat (list (^ obj :name) " (" (string-&gt;number (^ obj :build)) ")")))
 
+(define (whatevs obj)
+  (^ obj :name))
+
 (print-identification object-1)
 ;; ==&gt; "Manuel &lt;msimoni@gmail.com&gt;"
 (print-identification object-2)
 ;; ==&gt; "Toyota (2008)"
+(whatevs object-1)
+;; ==&gt; "Manuel"
 </pre>
 
 
@@ -142,6 +147,52 @@ compiler.
 <div class="outline-text-3" id="text-1.2">
 
 
+<p>
+Here's an encoding using a OCaml's OO and a top class.
+</p>
+
+
+
+<pre class="example">class top =
+object
+  method print_identification =
+    "unknown"
+end
+class ['a] person (fields : 'a) =
+object
+  inherit top
+  method fields = fields
+  method print_identification =
+    String.concat "" [fields#name; " &lt;"; fields#email; "&gt;"]
+end;;
+class ['a] car (fields : 'a) =
+object
+  inherit top
+  method fields = fields
+  method print_identification =
+    String.concat "" [fields#brand; " &lt;"; string_of_int (fields#build); "&gt;"]
+end;;
+
+let whatevs obj =
+  obj#fields#name;;
+
+let object_1 = new person (object method name = "Manuel" method email = "msimoni@gmail.com" end);;
+let object_2 = new car (object method brand = "Toyota" method build = 2008 end);;
+let object_3 = new car (object method brand = "Toyota" method build = 2008 method color = "red" end);;
+
+print_string (object_1#print_identification);;
+print_string (object_2#print_identification);;
+print_string (object_3#print_identification);;
+print_string (whatevs object_1);;
+</pre>
+
+
+
+
+<p>
+Here's an encoding using polymorphic variants, that can't type
+<code>whatevs</code>:
+</p>
 
 
 
@@ -162,9 +213,6 @@ print_string (print_identification object_2);;
 
 
 
-
-
-<hr/>
 </div>
 </div>
 </div>
@@ -172,7 +220,7 @@ print_string (print_identification object_2);;
 <p class="author"> Author: Manuel Simoni
 <a href="mailto:msimoni@gmail.com">&lt;msimoni@gmail.com&gt;</a>
 </p>
-<p class="date"> Date: 2013-01-20 14:24:55 CET</p>
+<p class="date"> Date: 2013-01-20 15:41:04 CET</p>
 </div>
 </div>
 </body>
