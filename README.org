@@ -1,3 +1,5 @@
 * Taf Programming Language
 
 See [[http://manuel.github.com/taf/doc/plan.html][Taf - A plan for a statically-typed Lisp]].
+
+There's also an article about [[http://manuel.github.com/taf/doc/translating.html][translating Taf to OCaml]] for type-checking.
