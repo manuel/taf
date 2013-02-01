@@ -1,0 +1,60 @@
+#+TITLE: Taf Language Manual
+#+AUTHOR: Manuel Simoni
+#+EMAIL: msimoni@gmail.com
+#+OPTIONS: toc:2 num:nil creator:nil
+#+STYLE: <link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+
+* Core
+** ~let~ /bindings/ ~.~ /body/ ~→~ /result/ *special*
+
+Scheme's =let= but with guaranteed left-to-right evaluation order.
+
+** ~letrec~ /bindings/ ~.~ /body/ ~→~ /result/ *special*
+
+Scheme's =letrec*=.
+
+** ~define~ /name/ /value/ ~→~ /name/ *special*
+
+Scheme's =define=, but allowed only at the top-level.
+
+** ~define~ ~(~ /name/ ~.~ /signature/ ~)~ ~.~ /body/ ~→~ /name/ *special*
+
+** ~set!~ /name/ /value/ ~→~ /value/ *special*
+** ~lambda~ /signature/ ~.~ /body/ ~→~ /function/ *special*
+
+Scheme's `lambda', but with guaranteed left-to-right evaluation of
+arguments.
+
+* Control
+** ~begin~ ~.~ /body/ ~→~ /result/ *special*
+
+Scheme's `begin'.
+
+As in Scheme, the contents of `begin' forms at the top-level are
+considered to be at the top-level themselves, recursively.
+
+** ~if~ /test/ /then/ /else/ ~→~ /result/ *special*
+** ~loop~ ~.~ /body/ ~→~ ~|~ *special*
+
+** ~block~ /name/ ~.~ /body/ ~→~ /result/ *special*
+** ~unwind-protect~ /protected-form/ ~.~ /cleanup-forms/ ~→~ /result/ *special*
+** ~push-prompt~ /prompt/ ~.~ /body/ ~→~ /result/ *special*
+** ~take-subcont~ /prompt/ /name/ ~.~ /body/ ~→~ /result/ *special*
+** ~push-subcont~ /continuation/ ~.~ /body/ ~→~ /result/ *special*
+* Macros
+** ~define-macro~ ~(~ /name/ ~.~ /macro-signature/ ~)~ ~.~ /body/ ~→~ /name/ *special*
+
+Similar to Common Lisp's `defmacro', but without quote or backquote.
+Code needs to be constructed with `cons', `list', etc.  Instead of
+referring to global bindings via quoted symbols, their values are
+directly referred to in the constructed expressions.
+
+** ~eval-when~ /phases/ ~.~ /body/ ~→~ /result/ *special*
+* Types
+** ~define-class~ /name/ ~.~ /slots/ ~→~ /name/ *special*
+** ~define-interface~ /name/ ~→~ /name/ *special*
+** ~define-generic~ ~(~ /name/ ~.~ /generic-signature/ ~)~ ~→~ /name/ *special*
+** ~define-method~ ~(~ /name/ ~.~ /method-signature/ ~)~ ~→~ /name/ *special*
+** ~object~ *type*
+** ~upcast~ /object/ /type/ ~→~ /object/ *special*
+** ~downcast~ /object/ /type/ ~→~ /object/ *special*
