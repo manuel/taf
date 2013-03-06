@@ -44,18 +44,18 @@ test_empty_program("\t \n  ");
 test_empty_program("  \t \n\n  ");
 test_empty_program("  \t \n");
 test_empty_program("  \t \r\n");
-function test_foo_program(string) {
+function test_foobar_program(string) {
     var form = taf.parse(string);
     assert(form.car.jsstr === "begin");
     assert(form.cdr.car.car.jsstr === "foo");
-    assert(form.cdr.car.cdr === taf.nil);
+    assert(form.cdr.car.cdr.car.car.jsstr === "bar");
 }
-test_foo_program("( foo)");
-test_foo_program("(foo )");
-test_foo_program("\t (\tfoo)");
-test_foo_program("\t (foo\n)");
-test_foo_program(" (   foo)");
-test_foo_program("  \t \n(\n\rfoo)");
-test_foo_program("  (foo)");
+test_foobar_program("( foo   ( bar))");
+test_foobar_program("(foo \n (bar\t) )");
+test_foobar_program("\t (\tfoo  \n \t(bar\t) )");
+test_foobar_program("\t (foo\n(bar\t)\t)");
+test_foobar_program(" (   foo (bar))");
+test_foobar_program("  \t \n(\n\rfoo (bar ) )");
+test_foobar_program("  (foo (bar))");
 
 function assert(b) { if (!b) throw "Assertion failed!"; }
