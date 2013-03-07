@@ -24,11 +24,11 @@ function taf_init() {
     t_nil.prototype.equals_impl = function(nil, other) { return nil === other; };
     t_unit.prototype.equals_impl = function(unit, other) { return unit === other; };
     /***** Built-in Symbols *****/
-    var sym_begin = make_symbol("begin");
+    var s_begin = make_symbol("begin");
     /***** Parser *****/
     function parse(string) {
         var res = p_program(ps(string));
-	if (res.remaining.index === string.length) return make_cons(sym_begin, array_to_list(res.ast));
+	if (res.remaining.index === string.length) return make_cons(s_begin, array_to_list(res.ast));
         else fail("parse error at " + res.remaining.index); }
     var p_expression = function(input) { return p_expression(input); }; // forward decl.
     var p_symbol_char = choice(range("a", "z"), "-");
@@ -37,7 +37,7 @@ function taf_init() {
                             function(ast) { return array_to_list(ast[1]); });
     var p_expression = whitespace(choice(p_symbol, p_compound));
     var p_program = whitespace(repeat0(p_expression));
-    /***** (Abstract) Interpretation *****/
+    /***** Interpretation *****/
     function interpret(interpreter, expression) {
         if (is_instance(expression, t_cons)) return interpret_cons(interpreter, expression);
         else return interpreter.interpret_self_evaluating_object(interpreter, expression); }
@@ -46,26 +46,26 @@ function taf_init() {
         if (is_instance(operator, t_symbol)) {
             var special = lookup_special(interpreter, operator);
             if (special !== undefined) return special(interpreter, cdr(expression));
-            else fail("Illegal operator: " + expression); }
+            else fail("Illegal operator: " + operator); }
         else fail("Illegal form: " + expression); }
     // Special forms
     function special_name(symbol) { return "interpret_special_" + symbol_name(symbol); }
     function lookup_special(interpreter, symbol) { return interpreter[special_name(symbol)]; }
-    function put_special(interpreter_type, symbol, fun) { interpreter_type.prototype[special_name(symbol)] = fun; }
+    function define_special(interpreter_type, symbol, fun) {
+        interpreter_type.prototype[special_name(symbol)] = fun; }
     /***** Evaluator *****/
     function evaluate(expression) { return interpret(new t_evaluator(), expression); }
     function t_evaluator() {}
-    t_evaluator.prototype.interpret_self_evaluating_object = function(evaluator, object) {
-        return object;
-    };
-    put_special(t_evaluator, sym_begin, function self(evaluator, body) {
-        return unit;
-    });
+    t_evaluator.prototype.interpret_self_evaluating_object = function(evaluator, object) { return object; };
+    define_special(t_evaluator, s_begin, function self(evaluator, body) {
+        if (equals(body, nil)) return unit;
+        else { var res = interpret(evaluator, car(body));
+               if (cdr(body) === nil) return res; else return self(evaluator, cdr(body)); } });
     /***** Utilities *****/
     function assert(b) { if (!b) fail("Assertion failed!"); }
     function fail(msg) { throw msg; }
-    function array_to_list(array, end) {
-	var c = end ? end : nil; for (var i = array.length; i > 0; i--) c = make_cons(array[i - 1], c); return c; }
+    function array_to_list(array) {
+        var c = nil; for (var i = array.length; i > 0; i--) c = make_cons(array[i - 1], c); return c; }
     function make_list() { return array_to_list(Array.prototype.slice.call(arguments, 0)); }
     /***** API *****/
     return {

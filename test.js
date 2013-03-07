@@ -36,3 +36,5 @@ test_foobar_program("  \t \n(\n\rfoo (bar ) )");
 test_foobar_program("  (foo (bar))");
 
 taf.assert(taf.equals(taf.evaluate(taf.parse("(begin)")), taf.unit));
+taf.assert(taf.equals(taf.evaluate(taf.parse("(begin (begin)) (begin)")), taf.unit));
+taf.assert(taf.equals(taf.evaluate(taf.parse("(begin) (begin (begin (begin)))")), taf.unit));
